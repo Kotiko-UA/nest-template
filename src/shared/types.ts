@@ -1,5 +1,5 @@
 export interface IFile {
-  [key: string]: string;
+  [fieldName: string]: string | string[];
 }
 
 export interface IFilesData {}

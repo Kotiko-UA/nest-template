@@ -39,7 +39,17 @@ export class UsersController {
 
   @Post('/register')
   // TODO: add to get photo
-  // @UseInterceptors(FastifyFileInterceptor(['photo']))
+  // @UseInterceptors(
+  //   FastifyUniversalFileInterceptor(['avatar', 'documents'], {
+  //     maxFilesPerField: 3,
+  //     maxFileSize: 10 * 1024 * 1024, // 10MB
+  //     allowedMimeTypes: ['image/jpeg', 'image/png', 'application/pdf'],
+  //     storage: 'disk',
+  //     destination: './static',
+  // //or
+  // //storage: 'memory',
+  //   }),
+  // )
   @HttpCode(200)
   async register(
     @Request() req,
@@ -76,7 +86,7 @@ export class UsersController {
   @HttpCode(200)
   async sendVerifyCode(@Body() body: SendVerifyCodeDto): Promise<BaseOutDto> {
     const { email } = body;
-    const data = await this.usersService.sendVerifyCode(email);
+    await this.usersService.sendVerifyCode(email);
     return successResponseData;
   }
 
@@ -84,7 +94,7 @@ export class UsersController {
   @HttpCode(200)
   async sendResetLink(@Body() body: SendVerifyCodeDto): Promise<BaseOutDto> {
     const { email } = body;
-    const data = await this.usersService.sendResetLink(email);
+    await this.usersService.sendResetLink(email);
     return successResponseData;
   }
   @Post('/restore-password')
