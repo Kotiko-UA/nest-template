@@ -6,9 +6,9 @@ import { ResponseInterseptor } from './common/interseptors/response.interseptor'
 import { ValidationPipe } from './common/pipe/pipe';
 import { json } from 'express';
 import { FastifyAdapter } from '@nestjs/platform-fastify';
-import fmp from 'fastify-multipart';
-
-require('dotenv').config();
+import fmp from '@fastify/multipart';
+import dotend from 'dotenv';
+dotend.config();
 
 async function bootstrap() {
   const logger = new Logger();

@@ -16,7 +16,7 @@ import { IFile } from 'src/shared/types';
 import { v4 as uuidv4 } from 'uuid';
 
 export function FastifyFileInterceptor(
-  fieldNames: string[]
+  fieldNames: string[],
 ): Type<NestInterceptor> {
   class MixinInterceptor implements NestInterceptor {
     protected multer: any;
@@ -24,14 +24,14 @@ export function FastifyFileInterceptor(
     constructor(
       @Optional()
       @Inject('MULTER_MODULE_OPTIONS')
-      options: Multer
+      options: Multer,
     ) {
       this.multer = (FastifyMulter as any)({ ...options });
     }
 
     async intercept(
       context: ExecutionContext,
-      next: CallHandler
+      next: CallHandler,
     ): Promise<Observable<any>> {
       const ctx = context.switchToHttp();
       const request = ctx.getRequest();
@@ -42,7 +42,7 @@ export function FastifyFileInterceptor(
           fieldNames.map(name => ({
             name,
             maxCount: 1,
-          }))
+          })),
         )(request, ctx.getResponse(), async (error: any) => {
           if (error) {
             return reject(error);

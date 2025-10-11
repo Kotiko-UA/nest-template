@@ -18,7 +18,7 @@ export class ReqData extends FastifyAdapter {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     callback: (field: any, file: Stream, filename: string) => any,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    errorCallback: (error: Error) => any
+    errorCallback: (error: Error) => any,
   ) => any;
 }
 
@@ -26,5 +26,5 @@ export type Multipart = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   callback: (field: any, file: Stream, filename: string) => any,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  errorCallback: (error: Error) => any
+  errorCallback: (error: Error) => any,
 ) => any;
