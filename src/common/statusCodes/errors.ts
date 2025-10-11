@@ -36,7 +36,7 @@ export enum ErrorCodes {
   OpenAiKeyNotFound = 117,
   FileLoadError = 118,
   GenerationImageError = 119,
-  FailedWriteFile = 120
+  FailedWriteFile = 120,
 }
 
 export const ErrorDescriptionsArray = {
@@ -50,7 +50,8 @@ export const ErrorDescriptionsArray = {
   [ErrorCodes.DataNotFound]: 'Data Not Found',
   [ErrorCodes.IsAlreadyExist]: 'Is Already Exist',
   [ErrorCodes.UserNotFound]: 'User Not Found',
-  [ErrorCodes.AnActiveSubscriptionAlreadyExists]: 'An Active Subscription Already Exists',
+  [ErrorCodes.AnActiveSubscriptionAlreadyExists]:
+    'An Active Subscription Already Exists',
   [ErrorCodes.SendEmailError]: 'Send Email Error',
   [ErrorCodes.EmailNotVerified]: 'Email Not Verified',
   [ErrorCodes.VerificationCodeNotValid]: 'Verification Code Not Valid',

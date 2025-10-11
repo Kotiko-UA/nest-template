@@ -34,7 +34,7 @@ import { ErrorCodes } from 'src/common/statusCodes';
 export class UsersController {
   constructor(
     private readonly usersService: UsersService,
-    private usersRepository: UsersRepository
+    private usersRepository: UsersRepository,
   ) {}
 
   @Post('/register')
@@ -43,7 +43,7 @@ export class UsersController {
   @HttpCode(200)
   async register(
     @Request() req,
-    @Body() body: RegisterDto
+    @Body() body: RegisterDto,
   ): Promise<BaseOutDto> {
     // TODO: add to get photo
     // const { filesData } = req;
@@ -121,7 +121,7 @@ export class UsersController {
   @HttpCode(200)
   async changePassword(
     @Body() body: ChangePasswordDto,
-    @Request() req
+    @Request() req,
   ): Promise<BaseOutDto> {
     const {
       user: { id: userId },
@@ -135,7 +135,7 @@ export class UsersController {
   update(
     @Param('id') id: string,
 
-    @Body() updateUserDto: UpdateUserDto
+    @Body() updateUserDto: UpdateUserDto,
   ) {
     return this.usersService.update(+id, updateUserDto);
   }
