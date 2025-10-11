@@ -7,8 +7,9 @@ import { ValidationPipe } from './common/pipe/pipe';
 import { json } from 'express';
 import { FastifyAdapter } from '@nestjs/platform-fastify';
 import fmp from '@fastify/multipart';
-import dotend from 'dotenv';
-dotend.config();
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 async function bootstrap() {
   const logger = new Logger();

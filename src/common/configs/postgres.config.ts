@@ -16,5 +16,5 @@ export default {
       entities: Object.values(Entities),
       synchronize: false,
       logging: ['error'],
-    } as TypeOrmModuleOptions),
+    }) as TypeOrmModuleOptions,
 };

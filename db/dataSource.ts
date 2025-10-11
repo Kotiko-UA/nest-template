@@ -1,18 +1,21 @@
+import 'reflect-metadata';
 import { DataSource } from 'typeorm';
 import * as Entities from './entities';
-import * as process from 'process';
-import dotenv from 'dotenv';
+import * as dotenv from 'dotenv';
+
 dotenv.config({ path: '.env' });
 
-export const AppDataSource = new DataSource({
+const entities = Object.values(Entities);
+
+const AppDataSource = new DataSource({
   type: 'postgres',
   host: process.env.DB_HOST,
   port: Number(process.env.DB_PORT),
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  entities: Object.values(Entities),
-  migrations: ['./db/migrations/*.ts'],
+  entities,
+  migrations: ['db/migrations/*.ts'],
   synchronize: false,
 });
 
@@ -23,3 +26,5 @@ AppDataSource.initialize()
   .catch(err => {
     console.error('Error during Data Source initialization', err);
   });
+
+export default AppDataSource;

@@ -11,7 +11,7 @@ export const Roles = (...roles: string[]): CustomDecorator<unknown> => {
       acc[allRoles[item]] = true;
       return acc;
     },
-    {}
+    {},
   );
 
   return SetMetadata<unknown>('roles', definedRoles);

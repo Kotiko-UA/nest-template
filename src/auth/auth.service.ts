@@ -12,9 +12,7 @@ import { ErrorCodes } from 'src/common/statusCodes';
 import { promisify } from 'util';
 import { GeneratedTokensDto } from './dto/Tokens.dto';
 import { IAdmin } from './dto/common';
-import { GeneratedTokens, GoogleProfile, LoginAdminDto } from './auth.types';
-import { GoogleAuthOptions } from './dto/Login.dto';
-import axios from 'axios';
+import { GeneratedTokens, GoogleProfile } from './auth.types';
 import { BaseOutDto, generateResponse } from 'src/common/dto/baseOut.dto';
 import { InfoCodes } from 'src/common/statusCodes/infos';
 import { UsersService } from 'src/users/users.service';
@@ -28,7 +26,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
     private readonly usersRepository: UsersRepository,
-    private readonly usersService: UsersService
+    private readonly usersService: UsersService,
   ) {
     this.admins = this.configService.get('config.admins');
   }
@@ -79,7 +77,7 @@ export class AuthService {
     if (!result) {
       this.usersRepository.update(
         { id },
-        { block_count: user.block_count + 1 }
+        { block_count: user.block_count + 1 },
       );
       if (user.block_count + 1 >= 5) {
         this.usersRepository.update({ id }, { blocked: true });
@@ -94,7 +92,7 @@ export class AuthService {
 
   async executeUserWithToken(
     user: TokenInfo,
-    social?: boolean
+    social?: boolean,
   ): Promise<BaseOutDto> {
     const tokens: GeneratedTokens = this.generateTokens({
       id: user.id,
@@ -121,25 +119,30 @@ export class AuthService {
 
   async getGoogleProfileByToken(
     token: string,
-    platform: string
+    platform: string,
   ): Promise<GoogleProfile | any> {
     try {
       if (platform === 'android') {
         return this.jwtService.decode(token);
       }
-      const options: GoogleAuthOptions = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
-      const {
-        data,
-      }: {
-        data: GoogleProfile;
-      } = await axios.get(
+
+      const response = await fetch(
         'https://www.googleapis.com/oauth2/v2/userinfo?alt=json',
-        options
+        {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
       );
+
+      if (!response.ok) {
+        throw new Error(
+          `Failed to fetch Google profile: ${response.statusText}`,
+        );
+      }
+
+      const data: GoogleProfile = await response.json();
       return data;
     } catch (err) {
       throw new BadRequestException(ErrorCodes.WrongToken);
@@ -148,7 +151,7 @@ export class AuthService {
 
   async validateSocialProfile(
     profile: Partial<GoogleProfile>,
-    customEmail: string
+    customEmail: string,
   ): Promise<BaseOutDto> {
     const email = customEmail || profile?.email;
     const existingUserWithMail =
@@ -170,7 +173,7 @@ export class AuthService {
         id: user.id,
         role: { id: user.roleId },
       },
-      true
+      true,
     );
   }
 }

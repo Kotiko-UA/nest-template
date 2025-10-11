@@ -1,4 +1,3 @@
-
 import { InfoCodes } from '../statusCodes';
 
 export class BaseOutDto {
@@ -8,7 +7,6 @@ export class BaseOutDto {
   //   example: { code: 1 }
   // })
   // status: { code: number } = { code: InfoCodes.Success };
-
 }
 
 export const successResponseData = new BaseOutDto();
