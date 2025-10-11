@@ -42,7 +42,7 @@ export function FastifyUniversalFileInterceptor(
     maxFileSize = 5 * 1024 * 1024, // 5MB
     allowedMimeTypes = ['image/jpeg', 'image/png', 'application/pdf'],
     storage = 'memory',
-    destination = './uploads',
+    destination = './static',
   } = options;
 
   class MixinInterceptor implements NestInterceptor {
