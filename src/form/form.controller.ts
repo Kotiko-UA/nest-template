@@ -14,7 +14,6 @@ import { FormService } from './form.service';
 import { CreateFormDto } from './dto/create-form.dto';
 import { UpdateFormDto } from './dto/update-form.dto';
 import { AuthGuard } from '@nestjs/passport';
-import { FilesInterceptor } from '@nestjs/platform-express';
 import { FileUploadInterceptor } from 'src/common/interseptors/file-upload.interceptor';
 
 @Controller('form')
@@ -26,9 +25,9 @@ export class FormController {
   @UseInterceptors(
     FileUploadInterceptor('files', {
       maxFiles: 3,
-      maxFileSize: 5 * 1024 * 1024, // 5 МБ
-      allowedTypes: /jpeg|jpg|png/,
-      useMemoryStorage: false, // файли не зберігаються на диск
+      maxFileSize: 5 * 1024 * 1024,
+      allowedTypes: ['image/jpeg', 'image/png', 'application/pdf'],
+      useMemoryStorage: false,
     }),
   )
   create(@Body() createFormDto: CreateFormDto, @UploadedFiles() files: any[]) {

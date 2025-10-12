@@ -1,12 +1,12 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
-import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { BadRequestException } from '@nestjs/common';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage, memoryStorage } from 'multer';
 import * as path from 'path';
 
 interface MulterOptions {
   maxFiles?: number;
   maxFileSize?: number; // в байтах
-  allowedTypes?: RegExp;
+  allowedTypes?: string[]; // масив MIME типів
   useMemoryStorage?: boolean;
 }
 
@@ -16,8 +16,8 @@ export function FileUploadInterceptor(
 ) {
   const {
     maxFiles = 5,
-    maxFileSize = 2 * 1024 * 1024, // 2 МБ
-    allowedTypes = /jpeg|jpg|png|pdf/,
+    maxFileSize = 2 * 1024 * 1024,
+    allowedTypes = ['image/jpeg', 'image/png', 'application/pdf'],
     useMemoryStorage = false,
   } = options;
 
@@ -36,14 +36,15 @@ export function FileUploadInterceptor(
       fileSize: maxFileSize,
     },
     fileFilter: (req, file, cb) => {
-      const extname = allowedTypes.test(
-        path.extname(file.originalname).toLowerCase(),
-      );
-      const mimetype = allowedTypes.test(file.mimetype);
-      if (extname && mimetype) {
+      if (allowedTypes.includes(file.mimetype)) {
         cb(null, true);
       } else {
-        cb(new BadRequestException('Невірний тип файлу!'), false);
+        cb(
+          new BadRequestException(
+            `Invalid file type! Allowed: ${allowedTypes.join(', ')}`,
+          ),
+          false,
+        );
       }
     },
   });
