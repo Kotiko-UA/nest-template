@@ -23,7 +23,7 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly usersRepository: UsersRepository,
-    private readonly usersService: UsersService
+    private readonly usersService: UsersService,
   ) {}
 
   @UseGuards(AuthGuard('local'))
@@ -36,7 +36,7 @@ export class AuthController {
     const mappedData = {
       ...userInfo,
     };
-
+    console.log({ user });
     const tokens: GeneratedTokensDto = await this.authService.generateTokens({
       id: user.id,
       role: userInfo.role.id,
@@ -61,25 +61,25 @@ export class AuthController {
   @HttpCode(200)
   @Post('/google')
   async getTokenAfterGoogleSignIn(
-    @Body() body: BodyTokenDto
+    @Body() body: BodyTokenDto,
   ): Promise<BaseOutDto> {
     let googleProfile;
     if (body.id_token) {
       googleProfile = await this.authService.getGoogleProfileByToken(
         body.id_token,
-        'android'
+        'android',
       );
       googleProfile.id = googleProfile.sub;
     } else {
       googleProfile = await this.authService.getGoogleProfileByToken(
         body.access_token,
-        'any'
+        'any',
       );
     }
 
     const user = await this.authService.validateSocialProfile(
       googleProfile,
-      body.email
+      body.email,
     );
 
     return user;

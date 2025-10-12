@@ -59,8 +59,6 @@ export class AuthService {
       block_count: number;
     } = await this.usersRepository.getUser(email.toLowerCase());
 
-    const id = Number(user.id);
-
     if (!user || !user.password) {
       throw new ForbiddenException(ErrorCodes.CredentialsNotValid);
     }
@@ -70,7 +68,7 @@ export class AuthService {
     if (user.blocked) {
       throw new BadRequestException(ErrorCodes.NotEnoughPermissions);
     }
-
+    const id = Number(user.id);
     const result = await promisify(bcrypt.compare)(password, user.password);
 
     if (!result) {

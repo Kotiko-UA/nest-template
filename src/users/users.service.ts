@@ -25,7 +25,7 @@ export class UsersService {
     private configService: ConfigService,
     private usersRepository: UsersRepository,
     private readonly mailerService: NodemailerService,
-    private rolesRepository: RolesRepository
+    private rolesRepository: RolesRepository,
   ) {
     this.frontendUrl = this.configService.get('data.frontendUrl');
   }
@@ -134,7 +134,7 @@ export class UsersService {
     return await this.mailerService.sendMail(
       [email],
       'Verify email',
-      generateEmailMessage('verifyEmail', { verificationCode })
+      generateEmailMessage('verifyEmail', { verificationCode }),
     );
   }
 
@@ -148,7 +148,7 @@ export class UsersService {
         frontendUrl: this.frontendUrl,
         email: encodeURIComponent(email),
         verificationCode: encodeURIComponent(verificationCode),
-      })
+      }),
     );
   }
 
@@ -167,7 +167,7 @@ export class UsersService {
       .then(salt => bcrypt.hash(password, salt));
     await this.usersRepository.update(
       { email },
-      { password: newPassword, verificationCode: '' }
+      { password: newPassword, verificationCode: '' },
     );
   }
 
@@ -191,7 +191,7 @@ export class UsersService {
 
     const result = await promisify(bcrypt.compare)(
       body.password,
-      user.password
+      user.password,
     );
     if (!result) {
       throw new ForbiddenException(ErrorCodes.CredentialsNotValid);
@@ -226,7 +226,7 @@ export class UsersService {
     const user = await this.usersRepository.findOneBy({ id });
     await this.usersRepository.update(
       { id },
-      { blocked: !user.blocked, block_count: 0 }
+      { blocked: !user.blocked, block_count: 0 },
     );
   }
 }
