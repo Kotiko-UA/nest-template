@@ -40,20 +40,18 @@ export class UsersController {
   @Post('/register')
   // TODO: add to get photo
   // @UseInterceptors(
-  //   FastifyUniversalFileInterceptor(['avatar', 'documents'], {
-  //     maxFilesPerField: 3,
-  //     maxFileSize: 10 * 1024 * 1024, // 10MB
-  //     allowedMimeTypes: ['image/jpeg', 'image/png', 'application/pdf'],
-  //     storage: 'disk',
-  //     destination: './static',
-  // //or
-  // //storage: 'memory',
+  //   FileUploadInterceptor('files', {
+  //     maxFiles: 3,
+  //     maxFileSize: 5 * 1024 * 1024,
+  //     allowedTypes: ['image/jpeg', 'image/png', 'application/pdf'],
+  //     useMemoryStorage: false,
   //   }),
   // )
   @HttpCode(200)
   async register(
     @Request() req,
     @Body() body: RegisterDto,
+    // @UploadedFiles() files: any[]
   ): Promise<BaseOutDto> {
     // TODO: add to get photo
     // const { filesData } = req;
