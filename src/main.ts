@@ -32,11 +32,7 @@ async function bootstrap() {
   app.enableCors();
   app.use(json({ limit: '100mb' }));
   await app.listen(process.env.API_PORT ?? 3000, () => {
-    logger.log(
-      'Api started on port: ' + process.env.API_PORT
-        ? process.env.API_PORT
-        : 3000,
-    );
+    logger.log('Api started on port: ' + (process.env.API_PORT ?? 3000));
   });
 }
 bootstrap();

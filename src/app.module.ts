@@ -6,6 +6,7 @@ import { UsersModule } from './users/users.module';
 import { SharedModule } from './shared/shared.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
+import { FormModule } from './form/form.module';
 import dbConfig from './common/configs/postgres.config';
 import envConfig from './common/configs/env.config';
 
@@ -16,6 +17,7 @@ import envConfig from './common/configs/env.config';
     AuthModule,
     UsersModule,
     SharedModule,
+    FormModule,
   ],
   controllers: [AppController],
   providers: [AppService],
