@@ -16,6 +16,8 @@ import { RestorePasswordDto } from './dto/restorePasswordDto';
 import { ChangePasswordDto } from './dto/changePasswordDto';
 import { generateEmailMessage } from 'src/common/utils/emailMessages';
 import { UpdateUserDto } from './dto/updateUserDto';
+import { ErrorDescriptionsArray } from 'src/common/statusCodes/errors';
+import { BadRequestAppException } from 'src/common/exceptions';
 
 @Injectable()
 export class UsersService {
@@ -61,7 +63,7 @@ export class UsersService {
     });
 
     if (userExist) {
-      throw new BadRequestException(ErrorCodes.IsAlreadyExist);
+      throw new BadRequestAppException(ErrorCodes.IsAlreadyExist);
     }
 
     // if (isSocial) {
