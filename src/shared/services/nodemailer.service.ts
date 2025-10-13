@@ -1,7 +1,8 @@
 import { ConfigService } from '@nestjs/config';
 import * as NodeMailer from 'nodemailer';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ErrorCodes } from 'src/common/statusCodes';
+import { BadRequestAppException } from 'src/common/exceptions';
 
 @Injectable()
 export class NodemailerService {
@@ -38,7 +39,7 @@ export class NodemailerService {
       });
     } catch (e) {
       console.log({ e });
-      throw new BadRequestException(ErrorCodes.SendEmailError);
+      throw new BadRequestAppException(ErrorCodes.SendEmailError);
     }
   }
 }

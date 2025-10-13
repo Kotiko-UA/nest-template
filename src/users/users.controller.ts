@@ -8,7 +8,6 @@ import {
   Get,
   Patch,
   Param,
-  ForbiddenException,
 } from '@nestjs/common';
 import {
   BaseOutDto,
@@ -29,6 +28,7 @@ import { RegisterDto } from './dto/createUserDto';
 import { UpdateUserDto } from './dto/updateUserDto';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { ErrorCodes } from 'src/common/statusCodes';
+import { ForbiddenAppException } from 'src/common/exceptions';
 
 @Controller('/users')
 export class UsersController {
@@ -119,7 +119,7 @@ export class UsersController {
   getAll(@Request() req) {
     const { user } = req;
     if (user.role !== 1) {
-      throw new ForbiddenException(ErrorCodes.CredentialsNotValid);
+      throw new ForbiddenAppException(ErrorCodes.CredentialsNotValid);
     }
     return this.usersService.getAll();
   }
@@ -153,7 +153,7 @@ export class UsersController {
   blockUser(@Param('id') id: string, @Request() req) {
     const { user } = req;
     if (user.role !== 1) {
-      throw new ForbiddenException(ErrorCodes.CredentialsNotValid);
+      throw new ForbiddenAppException(ErrorCodes.CredentialsNotValid);
     }
     return this.usersService.block(+id);
   }

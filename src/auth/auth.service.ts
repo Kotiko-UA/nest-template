@@ -16,6 +16,10 @@ import { BaseOutDto, generateResponse } from 'src/common/dto/baseOut.dto';
 import { InfoCodes } from 'src/common/statusCodes/infos';
 import { UsersService } from 'src/users/users.service';
 import { TokenInfo } from 'src/users/users.types';
+import {
+  BadRequestAppException,
+  ForbiddenAppException,
+} from 'src/common/exceptions';
 
 @Injectable()
 export class AuthService {
@@ -60,13 +64,13 @@ export class AuthService {
     } = await this.usersRepository.getUser(email.toLowerCase());
 
     if (!user || !user.password) {
-      throw new ForbiddenException(ErrorCodes.CredentialsNotValid);
+      throw new ForbiddenAppException(ErrorCodes.CredentialsNotValid);
     }
     if (!user.active) {
-      throw new BadRequestException(ErrorCodes.EmailNotVerified);
+      throw new BadRequestAppException(ErrorCodes.EmailNotVerified);
     }
     if (user.blocked) {
-      throw new BadRequestException(ErrorCodes.NotEnoughPermissions);
+      throw new ForbiddenAppException(ErrorCodes.NotEnoughPermissions);
     }
     const id = Number(user.id);
     const result = await promisify(bcrypt.compare)(password, user.password);
@@ -79,7 +83,7 @@ export class AuthService {
       if (user.block_count + 1 >= 5) {
         this.usersRepository.update({ id }, { blocked: true });
       }
-      throw new ForbiddenException(ErrorCodes.CredentialsNotValid);
+      throw new ForbiddenAppException(ErrorCodes.CredentialsNotValid);
     }
     this.usersRepository.update({ id }, { block_count: 0 });
     return {
@@ -142,7 +146,7 @@ export class AuthService {
       const data: GoogleProfile = await response.json();
       return data;
     } catch (err) {
-      throw new BadRequestException(ErrorCodes.WrongToken);
+      throw new BadRequestAppException(ErrorCodes.WrongToken);
     }
   }
 

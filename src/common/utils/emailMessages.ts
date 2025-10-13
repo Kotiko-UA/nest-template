@@ -101,7 +101,7 @@ export function generateEmailMessage(key: string, replacements: object) {
       const regex = new RegExp(`\\{${placeholder}\\}`, 'g');
       return message.replace(regex, replacements[placeholder]);
     },
-    messageTemplate
+    messageTemplate,
   );
 
   return processedMessage;

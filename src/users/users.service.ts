@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  ForbiddenException,
-  Injectable,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 import { randomBytes } from 'crypto';
@@ -16,8 +12,12 @@ import { RestorePasswordDto } from './dto/restorePasswordDto';
 import { ChangePasswordDto } from './dto/changePasswordDto';
 import { generateEmailMessage } from 'src/common/utils/emailMessages';
 import { UpdateUserDto } from './dto/updateUserDto';
-import { ErrorDescriptionsArray } from 'src/common/statusCodes/errors';
-import { BadRequestAppException } from 'src/common/exceptions';
+
+import {
+  BadRequestAppException,
+  ForbiddenAppException,
+  NotFoundAppException,
+} from 'src/common/exceptions';
 
 @Injectable()
 export class UsersService {
@@ -96,7 +96,7 @@ export class UsersService {
       where: { verificationCode, email },
     });
     if (!user) {
-      throw new BadRequestException(ErrorCodes.UserNotFound);
+      throw new NotFoundAppException(ErrorCodes.UserNotFound);
     }
 
     const payload = {
@@ -112,7 +112,7 @@ export class UsersService {
       where: { verificationCode, email },
     });
     if (!user) {
-      throw new BadRequestException(ErrorCodes.VerificationCodeNotValid);
+      throw new BadRequestAppException(ErrorCodes.VerificationCodeNotValid);
     }
   }
 
@@ -121,7 +121,7 @@ export class UsersService {
       where: { email },
     });
     if (!user) {
-      throw new BadRequestException(ErrorCodes.UserNotFound);
+      throw new NotFoundAppException(ErrorCodes.UserNotFound);
     }
 
     const verificationCode = this.generateRandomCode(6);
@@ -155,13 +155,13 @@ export class UsersService {
   }
 
   async restorePassword(body: RestorePasswordDto) {
-    let { email, password, verificationCode } = body;
+    const { email, password, verificationCode } = body;
 
     const userExist = await this.usersRepository.findOne({
       where: { email, verificationCode },
     });
     if (!userExist) {
-      throw new BadRequestException(ErrorCodes.UserNotFound);
+      throw new NotFoundAppException(ErrorCodes.UserNotFound);
     }
 
     const newPassword = await bcrypt
@@ -178,7 +178,7 @@ export class UsersService {
       where: { id },
     });
     if (!user) {
-      throw new BadRequestException(ErrorCodes.UserNotFound);
+      throw new NotFoundAppException(ErrorCodes.UserNotFound);
     }
     return user;
   }
@@ -188,7 +188,7 @@ export class UsersService {
       where: { id },
     });
     if (!user) {
-      throw new BadRequestException(ErrorCodes.UserNotFound);
+      throw new NotFoundAppException(ErrorCodes.UserNotFound);
     }
 
     const result = await promisify(bcrypt.compare)(
@@ -196,7 +196,7 @@ export class UsersService {
       user.password,
     );
     if (!result) {
-      throw new ForbiddenException(ErrorCodes.CredentialsNotValid);
+      throw new ForbiddenAppException(ErrorCodes.CredentialsNotValid);
     }
 
     const newPassword = await bcrypt

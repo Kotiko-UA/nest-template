@@ -1,11 +1,7 @@
-import {
-  ExecutionContext,
-  Injectable,
-  CanActivate,
-  BadRequestException,
-} from '@nestjs/common';
+import { ExecutionContext, Injectable, CanActivate } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { ErrorCodes } from '../statusCodes';
+import { ForbiddenAppException } from '../exceptions';
 
 @Injectable()
 export class UserAccessGuard implements CanActivate {
@@ -28,7 +24,7 @@ export class UserAccessGuard implements CanActivate {
       params[userField] !== user.id &&
       user.roleId === this.USER_ROLE
     ) {
-      throw new BadRequestException(ErrorCodes.NotEnoughPermissions);
+      throw new ForbiddenAppException(ErrorCodes.NotEnoughPermissions);
     }
 
     return true;

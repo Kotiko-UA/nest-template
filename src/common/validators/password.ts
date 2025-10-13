@@ -15,9 +15,9 @@ export function IsPassword() {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         validate(value: any) {
           return (
-            typeof value === 'string'
-            && value.length > 0
-            && Boolean(
+            typeof value === 'string' &&
+            value.length > 0 &&
+            Boolean(
               value.match(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z\W]{8,}$/),
             )
           );
