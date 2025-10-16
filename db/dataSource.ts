@@ -2,30 +2,41 @@ import 'reflect-metadata';
 import { DataSource } from 'typeorm';
 import * as Entities from './entities';
 import * as dotenv from 'dotenv';
+import { join } from 'path';
 
 dotenv.config({ path: '.env' });
 
-const entities = Object.values(Entities);
+const isProd = process.env.NODE_ENV === 'production';
 
-const AppDataSource = new DataSource({
+export default new DataSource({
   type: 'postgres',
-  // host: process.env.DB_HOST, // - якщо звичайний білд
-  // port: Number(process.env.DB_PORT), // - якщо звичайний білд
-  // username: process.env.DB_USERNAME, // - якщо звичайний білд
-  // password: process.env.DB_PASSWORD, // - якщо звичайний білд
-  // database: process.env.DB_NAME, // - якщо звичайний білд
-  url: process.env.DB_HOST, // - для Railway замість того, що зверху
-  entities,
-  migrations: ['db/migrations/*.ts'],
+  url:
+    process.env.DB_URL && process.env.DB_URL.trim().length > 0
+      ? process.env.DB_URL
+      : undefined,
+  host:
+    !process.env.DB_URL || process.env.DB_URL.trim().length === 0
+      ? process.env.DB_HOST
+      : undefined,
+  port:
+    !process.env.DB_URL || process.env.DB_URL.trim().length === 0
+      ? Number(process.env.DB_PORT)
+      : undefined,
+  username:
+    !process.env.DB_URL || process.env.DB_URL.trim().length === 0
+      ? process.env.DB_USERNAME
+      : undefined,
+  password:
+    !process.env.DB_URL || process.env.DB_URL.trim().length === 0
+      ? process.env.DB_PASSWORD
+      : undefined,
+  database:
+    !process.env.DB_URL || process.env.DB_URL.trim().length === 0
+      ? process.env.DB_NAME
+      : undefined,
+  entities: Object.values(Entities),
+  migrations: [
+    isProd ? join(__dirname, 'migrations/*.js') : 'db/migrations/*.ts',
+  ],
   synchronize: false,
 });
-
-AppDataSource.initialize()
-  .then(() => {
-    console.log('Data Source has been initialized!');
-  })
-  .catch(err => {
-    console.error('Error during Data Source initialization', err);
-  });
-
-export default AppDataSource;
