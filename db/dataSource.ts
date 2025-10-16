@@ -9,11 +9,12 @@ const entities = Object.values(Entities);
 
 const AppDataSource = new DataSource({
   type: 'postgres',
-  host: process.env.DB_HOST,
-  port: Number(process.env.DB_PORT),
-  username: process.env.DB_USERNAME,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
+  // host: process.env.DB_HOST, // - якщо звичайний білд
+  // port: Number(process.env.DB_PORT), // - якщо звичайний білд
+  // username: process.env.DB_USERNAME, // - якщо звичайний білд
+  // password: process.env.DB_PASSWORD, // - якщо звичайний білд
+  // database: process.env.DB_NAME, // - якщо звичайний білд
+  url: process.env.DB_HOST, // - для Railway замість того, що зверху
   entities,
   migrations: ['db/migrations/*.ts'],
   synchronize: false,
