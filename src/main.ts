@@ -30,6 +30,7 @@ async function bootstrap() {
   app.useGlobalInterceptors(new ResponseInterseptor());
   app.useGlobalPipes(new ValidationPipe());
   app.enableCors();
+  // app.enableCors({ origin: [/^https:\/\/(www\.)?kotiko\.work$/] });
   app.use(json({ limit: '100mb' }));
   await app.listen(process.env.API_PORT ?? 3000, () => {
     logger.log('Api started on port: ' + (process.env.API_PORT ?? 3000));
