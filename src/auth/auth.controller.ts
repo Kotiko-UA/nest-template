@@ -10,7 +10,6 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { UsersRepository } from 'src/common/repositories';
-import { BaseOutDto, generateResponse } from '../common/dto/baseOut.dto';
 import { GeneratedTokens, LoginAdminDto } from './auth.types';
 import { LoginDto } from './dto/Login.dto';
 import { GeneratedTokensDto } from './dto/Tokens.dto';
@@ -29,7 +28,7 @@ export class AuthController {
   @UseGuards(AuthGuard('local'))
   @Post('/login')
   @HttpCode(200)
-  async login(@Body() body: LoginDto, @Request() req): Promise<BaseOutDto> {
+  async login(@Body() body: LoginDto, @Request() req) {
     const { user } = req;
 
     const userInfo = await this.usersRepository.getUserWithRole(body.email);
@@ -41,7 +40,7 @@ export class AuthController {
       id: user.id,
       role: userInfo.role.id,
     });
-    return generateResponse({ ...tokens, user: mappedData });
+    return { ...tokens, user: mappedData };
   }
 
   @UseGuards(AuthGuard('jwt-refresh'))
@@ -60,9 +59,7 @@ export class AuthController {
 
   @HttpCode(200)
   @Post('/google')
-  async getTokenAfterGoogleSignIn(
-    @Body() body: BodyTokenDto,
-  ): Promise<BaseOutDto> {
+  async getTokenAfterGoogleSignIn(@Body() body: BodyTokenDto) {
     let googleProfile;
     if (body.id_token) {
       googleProfile = await this.authService.getGoogleProfileByToken(

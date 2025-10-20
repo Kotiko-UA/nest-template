@@ -12,7 +12,6 @@ import { promisify } from 'util';
 import { GeneratedTokensDto } from './dto/Tokens.dto';
 import { IAdmin } from './dto/common';
 import { GeneratedTokens, GoogleProfile } from './auth.types';
-import { BaseOutDto, generateResponse } from 'src/common/dto/baseOut.dto';
 import { InfoCodes } from 'src/common/statusCodes/infos';
 import { UsersService } from 'src/users/users.service';
 import { TokenInfo } from 'src/users/users.types';
@@ -91,10 +90,7 @@ export class AuthService {
     };
   }
 
-  async executeUserWithToken(
-    user: TokenInfo,
-    social?: boolean,
-  ): Promise<BaseOutDto> {
+  async executeUserWithToken(user: TokenInfo, social?: boolean) {
     const tokens: GeneratedTokens = this.generateTokens({
       id: user.id,
       roleId: user.role.id,
@@ -109,13 +105,13 @@ export class AuthService {
 
     const { active } = userInfo;
     if (active || social) {
-      return generateResponse({
+      return {
         ...tokens,
         user: mappedData,
-      });
+      };
     }
 
-    return generateResponse({ code: InfoCodes.NeedVerifyEmail });
+    return { code: InfoCodes.NeedVerifyEmail };
   }
 
   async getGoogleProfileByToken(
@@ -153,7 +149,7 @@ export class AuthService {
   async validateSocialProfile(
     profile: Partial<GoogleProfile>,
     customEmail: string,
-  ): Promise<BaseOutDto> {
+  ) {
     const email = customEmail || profile?.email;
     const existingUserWithMail =
       await this.usersRepository.getUserWithRole(email);

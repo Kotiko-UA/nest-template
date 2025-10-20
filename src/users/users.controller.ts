@@ -9,11 +9,6 @@ import {
   Patch,
   Param,
 } from '@nestjs/common';
-import {
-  BaseOutDto,
-  generateResponse,
-  successResponseData,
-} from 'src/common/dto/baseOut.dto';
 import { AuthGuard } from '@nestjs/passport';
 import {
   SendVerifyCodeDto,
@@ -52,65 +47,65 @@ export class UsersController {
     @Request() req,
     @Body() body: RegisterDto,
     // @UploadedFiles() files: any[]
-  ): Promise<BaseOutDto> {
+  ) {
     // TODO: add to get photo
     // const { filesData } = req;
     const user = await this.usersService.registerUser(body);
-    return generateResponse({
+    return {
       active: user.active,
       blocked: user.blocked,
       email: user.email,
-    });
+    };
   }
 
   @Post('/verify')
   @HttpCode(200)
-  async verify(@Body() body: VerifyUserDto): Promise<BaseOutDto> {
+  async verify(@Body() body: VerifyUserDto) {
     const { verificationCode, email } = body;
     const data = await this.usersService.verifyUser(verificationCode, email);
     const user = await this.usersRepository.getUserInfo(data.id);
-    return generateResponse({ user });
+    return { user };
   }
 
   @Post('/validate-verify-code')
   @HttpCode(200)
-  async validateCode(@Body() body: VerifyCodeDto): Promise<BaseOutDto> {
+  async validateCode(@Body() body: VerifyCodeDto) {
     const { verificationCode, email } = body;
     await this.usersService.validateVerificationCode(verificationCode, email);
-    return successResponseData;
+    return {};
   }
 
   @Post('/send-verify-code')
   @HttpCode(200)
-  async sendVerifyCode(@Body() body: SendVerifyCodeDto): Promise<BaseOutDto> {
+  async sendVerifyCode(@Body() body: SendVerifyCodeDto) {
     const { email } = body;
     await this.usersService.sendVerifyCode(email);
-    return successResponseData;
+    return {};
   }
 
   @Post('/send-email-restore-password')
   @HttpCode(200)
-  async sendResetLink(@Body() body: SendVerifyCodeDto): Promise<BaseOutDto> {
+  async sendResetLink(@Body() body: SendVerifyCodeDto) {
     const { email } = body;
     await this.usersService.sendResetLink(email);
-    return successResponseData;
+    return {};
   }
   @Post('/restore-password')
   @HttpCode(200)
-  async restorePassword(@Body() body: RestorePasswordDto): Promise<BaseOutDto> {
+  async restorePassword(@Body() body: RestorePasswordDto) {
     await this.usersService.restorePassword(body);
-    return successResponseData;
+    return {};
   }
 
   @UseGuards(AuthGuard('jwt'))
   @Get('/current')
   @HttpCode(200)
-  async getUserInfo(@Request() req): Promise<BaseOutDto> {
+  async getUserInfo(@Request() req) {
     const {
       user: { id: userId },
     } = req;
     const data = await this.usersService.getUserInfo(userId);
-    return generateResponse(data);
+    return data;
   }
 
   @UseGuards(AuthGuard('jwt'))
@@ -127,15 +122,12 @@ export class UsersController {
   @UseGuards(AuthGuard('jwt'))
   @Post('/change-password')
   @HttpCode(200)
-  async changePassword(
-    @Body() body: ChangePasswordDto,
-    @Request() req,
-  ): Promise<BaseOutDto> {
+  async changePassword(@Body() body: ChangePasswordDto, @Request() req) {
     const {
       user: { id: userId },
     } = req;
     await this.usersService.changePassword(userId, body);
-    return successResponseData;
+    return {};
   }
 
   @UseGuards(AuthGuard('jwt'))
