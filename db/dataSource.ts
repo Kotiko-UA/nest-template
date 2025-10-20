@@ -36,7 +36,7 @@ export default new DataSource({
       : undefined,
   entities: Object.values(Entities),
   migrations: [
-    isProd ? join(__dirname, 'db/migrations/*.js') : 'db/migrations/*.ts',
+    isProd ? join(__dirname, 'db/migrations/*.ts') : 'db/migrations/*.ts',
   ],
   synchronize: false,
 });
