@@ -1,3 +1,4 @@
+// find change-this-name and replace to name of needed company
 export const emailMessages = {
   verifyEmail: `<div style="font-family: Arial, sans-serif; background-color: #f4f4f4; text-align: center; padding: 30px;">
         <table style="max-width: 600px; margin: 0 auto; background-color: #fff; padding: 20px; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">        
@@ -13,7 +14,7 @@ export const emailMessages = {
             </tr>
             <tr>
                 <td style="padding: 0 20px;">
-                    <p>Best regards, <br /> ZO FIT Team</p>
+                    <p>Best regards, <br />change-this-name</p>
                 </td>
             </tr>
         </table>
@@ -37,7 +38,7 @@ export const emailMessages = {
             </tr>
             <tr>
                 <td style="padding: 0 20px;">
-                    <p>Best regards, <br /> ZO FIT Team</p>
+                    <p>Best regards, <br /> change-this-name</p>
                 </td>
             </tr>
         </table>
@@ -47,7 +48,7 @@ export const emailMessages = {
             <tr>
                 <td style="text-align: center; padding: 20px 0;">
                     <h2>Email Verification</h2>
-                    <h3>Congratulations, you have become a member of the ZO FIT</h3>
+                    <h3>Congratulations, you have become a member of the change-this-name</h3>
                 </td>
             </tr>
             <tr>
@@ -62,12 +63,12 @@ export const emailMessages = {
             </tr>
             <tr>
                 <td style="padding: 0 20px;">
-                    <p>If you didn't sign up for ZO FIT, you can safely ignore this email.</p>
+                    <p>If you didn't sign up for change-this-name, you can safely ignore this email.</p>
                 </td>
             </tr>
             <tr>
                 <td style="padding: 0 20px;">
-                <p>Best regards, <br />ZO FIT Team</p>
+                <p>Best regards, <br />change-this-name</p>
                 </td>
             </tr>
         </table>
@@ -77,12 +78,12 @@ export const emailMessages = {
             <tr>
                 <td style="text-align: center; padding: 20px 0;">
                     <h2>Welcome</h2>
-                    <h3>Congratulations, you have become a member of the ZO FIT</h3>
+                    <h3>Congratulations, you have become a member of the change-this-name</h3>
                 </td>
             </tr>
             <tr>
                 <td style="padding: 0 20px;">
-                <p>Best regards, <br />ZO FIT Team</p>
+                <p>Best regards, <br />change-this-name</p>
                 </td>
             </tr>
         </table>
