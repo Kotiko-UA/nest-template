@@ -1,8 +1,35 @@
-import { ConfigService } from '@nestjs/config';
-import * as NodeMailer from 'nodemailer';
 import { Injectable } from '@nestjs/common';
-import { ErrorCodes } from 'src/common/statusCodes';
+import { ConfigService } from '@nestjs/config';
+import { Resend } from 'resend';
 import { BadRequestAppException } from 'src/common/exceptions';
+import { ErrorCodes } from 'src/common/statusCodes';
+import * as NodeMailer from 'nodemailer';
+
+@Injectable()
+export class MailService {
+  private readonly resend: Resend;
+  private readonly fromEmail: string;
+
+  constructor(private readonly configService: ConfigService) {
+    const apiKey = this.configService.get<string>('resend.resendApiKey');
+    this.fromEmail = 'Kotiko <no-reply@kotiko.work>';
+    this.resend = new Resend(apiKey);
+  }
+
+  async sendMail(to: string[], subject: string, html: string): Promise<void> {
+    try {
+      await this.resend.emails.send({
+        from: this.fromEmail,
+        to,
+        subject,
+        html,
+      });
+    } catch (e) {
+      console.log({ e });
+      throw new BadRequestAppException(ErrorCodes.SendEmailError);
+    }
+  }
+}
 
 @Injectable()
 export class NodemailerService {

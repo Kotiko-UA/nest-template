@@ -8,6 +8,8 @@ import {
   Get,
   Patch,
   Param,
+  UseInterceptors,
+  UploadedFiles,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import {
@@ -24,12 +26,15 @@ import { UpdateUserDto } from './dto/updateUserDto';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { ErrorCodes } from 'src/common/statusCodes';
 import { ForbiddenAppException } from 'src/common/exceptions';
+// import { R2StorageService } from 'src/r2/storage.service';
+// import { FileUploadInterceptor } from 'src/common/interseptors/file-upload.interceptor';
 
 @Controller('/users')
 export class UsersController {
   constructor(
     private readonly usersService: UsersService,
     private usersRepository: UsersRepository,
+    // private readonly r2: R2StorageService,
   ) {}
 
   @Post('/register')
@@ -39,22 +44,34 @@ export class UsersController {
   //     maxFiles: 3,
   //     maxFileSize: 5 * 1024 * 1024,
   //     allowedTypes: ['image/jpeg', 'image/png', 'application/pdf'],
-  //     useMemoryStorage: false,
+  //     useMemoryStorage: true,
   //   }),
   // )
   @HttpCode(200)
   async register(
     @Request() req,
     @Body() body: RegisterDto,
-    // @UploadedFiles() files: any[]
+    // @UploadedFiles() files: File[],
   ) {
-    // TODO: add to get photo
-    // const { filesData } = req;
     const user = await this.usersService.registerUser(body);
+    // let fileLinks: string[] = [];
+
+    // if (files?.length) {
+    //   const uploads = await this.r2.uploadMany(files, {
+    //     prefix: `assign-appraisal/${user.id}`,
+    //     makePublicUrl: true,
+    //   });
+
+    //   fileLinks = uploads
+    //     .map(u => u.url)
+    //     .filter((v): v is string => Boolean(v));
+    // }
+
     return {
       active: user.active,
       blocked: user.blocked,
       email: user.email,
+      // fileLinks,
     };
   }
 

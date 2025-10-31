@@ -32,6 +32,23 @@ const smtp = registerAs('smtp', () => ({
   smtpPass: process.env.SMTP_PASS,
 }));
 
+const resend = registerAs('resend', () => ({
+  resendApiKey: process.env.RESEND_API_KEY,
+}));
+
+const recaptcha = registerAs('recaptcha', () => ({
+  recaptchaSecretKey: process.env.RECAPTCHA_SECRET_KEY,
+  recaptchaMinScore: process.env.RECAPTCHA_MIN_SCORE,
+}));
+
+const r2 = registerAs('r2', () => ({
+  r2AccountId: process.env.R2_ACCOUNT_ID,
+  r2AccessKeyId: process.env.R2_ACCESS_KEY_ID,
+  r2SecretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
+  r2Bucket: process.env.R2_BUCKET,
+  r2PublicBaseUrl: process.env.R2_PUBLIC_BASE_URL,
+}));
+
 export default {
   envFilePath: `.env`,
   validationSchema: Joi.object({
@@ -79,6 +96,20 @@ export default {
     SMTP_SECURE: Joi.boolean().required(),
     SMTP_LOGIN: Joi.string().required(),
     SMTP_PASS: Joi.string().required(),
+
+    // RESEND
+    RESEND_API_KEY: Joi.string().required(),
+
+    // RECAPTCHA
+    RECAPTCHA_SECRET_KEY: Joi.string(),
+    RECAPTCHA_MIN_SCORE: Joi.string(),
+
+    // R2 cloudflare
+    R2_ACCOUNT_ID: Joi.string().required(),
+    R2_ACCESS_KEY_ID: Joi.string().required(),
+    R2_SECRET_ACCESS_KEY: Joi.string().required(),
+    R2_BUCKET: Joi.string().required(),
+    R2_PUBLIC_BASE_URL: Joi.string().required(),
   }).custom((value, helpers) => {
     const hasUrl = !!(value.DB_URL && String(value.DB_URL).trim());
     const hasParams =
@@ -96,6 +127,6 @@ export default {
     }
     return value;
   }),
-  load: [db, jwt, data, smtp],
+  load: [db, jwt, data, smtp, resend, recaptcha, r2],
   isGlobal: true,
 };

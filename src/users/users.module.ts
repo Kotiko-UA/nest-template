@@ -8,10 +8,12 @@ import { Users } from 'db/entities';
 import { RolesRepository, UsersRepository } from 'src/common/repositories';
 import { NodemailerService } from 'src/shared/services';
 import { AuthService } from 'src/auth/auth.service';
+import { StorageModule } from 'src/r2/storage.module';
 
 @Module({
   imports: [
     PassportModule,
+    StorageModule,
     JwtModule.register({}),
     TypeOrmModule.forFeature([Users]),
   ],

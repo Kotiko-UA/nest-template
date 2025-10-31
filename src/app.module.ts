@@ -8,6 +8,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import dbConfig from './common/configs/postgres.config';
 import envConfig from './common/configs/env.config';
+import { RecaptchaModule } from './recaptcha/recaptcha.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import envConfig from './common/configs/env.config';
     AuthModule,
     UsersModule,
     SharedModule,
+    RecaptchaModule,
   ],
   controllers: [AppController],
   providers: [AppService],
