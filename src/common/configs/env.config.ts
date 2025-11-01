@@ -91,25 +91,25 @@ export default {
     JWT_SECRET_REFRESH_TTL: Joi.string().required(),
 
     // SMTP
-    SMTP_NAME: Joi.string().required(),
-    SMTP_PORT: Joi.number().required(),
-    SMTP_SECURE: Joi.boolean().required(),
-    SMTP_LOGIN: Joi.string().required(),
-    SMTP_PASS: Joi.string().required(),
+    SMTP_NAME: Joi.string(),
+    SMTP_PORT: Joi.number(),
+    SMTP_SECURE: Joi.boolean(),
+    SMTP_LOGIN: Joi.string(),
+    SMTP_PASS: Joi.string(),
 
     // RESEND
-    RESEND_API_KEY: Joi.string().required(),
+    RESEND_API_KEY: Joi.string(),
 
     // RECAPTCHA
     RECAPTCHA_SECRET_KEY: Joi.string(),
     RECAPTCHA_MIN_SCORE: Joi.string(),
 
     // R2 cloudflare
-    R2_ACCOUNT_ID: Joi.string().required(),
-    R2_ACCESS_KEY_ID: Joi.string().required(),
-    R2_SECRET_ACCESS_KEY: Joi.string().required(),
-    R2_BUCKET: Joi.string().required(),
-    R2_PUBLIC_BASE_URL: Joi.string().required(),
+    R2_ACCOUNT_ID: Joi.string(),
+    R2_ACCESS_KEY_ID: Joi.string(),
+    R2_SECRET_ACCESS_KEY: Joi.string(),
+    R2_BUCKET: Joi.string(),
+    R2_PUBLIC_BASE_URL: Joi.string(),
   }).custom((value, helpers) => {
     const hasUrl = !!(value.DB_URL && String(value.DB_URL).trim());
     const hasParams =
