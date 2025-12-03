@@ -44,6 +44,7 @@ export class UsersController {
   //     maxFiles: 3,
   //     maxFileSize: 5 * 1024 * 1024,
   //     allowedTypes: ['image/jpeg', 'image/png', 'application/pdf'],
+  //     allowedExtensions: ['pdf','doc','docx','xls','xlsx','jpg','jpeg','png'],
   //     useMemoryStorage: true,
   //   }),
   // )

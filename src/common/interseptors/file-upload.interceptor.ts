@@ -5,8 +5,9 @@ import * as path from 'path';
 
 interface MulterOptions {
   maxFiles?: number;
-  maxFileSize?: number; // в байтах
-  allowedTypes?: string[]; // масив MIME типів
+  maxFileSize?: number;
+  allowedTypes?: string[];
+  allowedExtensions?: string[]; // ✅ додали
   useMemoryStorage?: boolean;
 }
 
@@ -18,8 +19,13 @@ export function FileUploadInterceptor(
     maxFiles = 5,
     maxFileSize = 2 * 1024 * 1024,
     allowedTypes = ['image/jpeg', 'image/png', 'application/pdf'],
+    allowedExtensions, // ✅
     useMemoryStorage = false,
   } = options;
+
+  const allowedExtSet = allowedExtensions
+    ? new Set(allowedExtensions.map(e => e.replace(/^\./, '').toLowerCase()))
+    : null;
 
   return FilesInterceptor(fieldName, maxFiles, {
     storage: useMemoryStorage
@@ -36,16 +42,33 @@ export function FileUploadInterceptor(
       fileSize: maxFileSize,
     },
     fileFilter: (req, file, cb) => {
-      if (allowedTypes.includes(file.mimetype)) {
-        cb(null, true);
-      } else {
-        cb(
+      const ext = path
+        .extname(file.originalname || '')
+        .slice(1)
+        .toLowerCase();
+
+      // 1) Перевірка розширення (якщо whitelist заданий)
+      if (allowedExtSet) {
+        if (!ext || !allowedExtSet.has(ext)) {
+          return cb(
+            new BadRequestException(
+              `Invalid file extension ".${ext || '?'}"! Allowed: ${[...allowedExtSet].join(', ')}`,
+            ),
+            false,
+          );
+        }
+      }
+
+      if (!allowedTypes.includes(file.mimetype)) {
+        return cb(
           new BadRequestException(
-            `Invalid file type! Allowed: ${allowedTypes.join(', ')}`,
+            `Invalid file type "${file.mimetype}"! Allowed: ${allowedTypes.join(', ')}`,
           ),
           false,
         );
       }
+
+      return cb(null, true);
     },
   });
 }
