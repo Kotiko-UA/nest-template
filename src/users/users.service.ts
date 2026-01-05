@@ -226,9 +226,6 @@ export class UsersService {
   }
   async block(id: number) {
     const user = await this.usersRepository.findOneBy({ id });
-    await this.usersRepository.update(
-      { id },
-      { blocked: !user.blocked, block_count: 0 },
-    );
+    await this.usersRepository.update({ id }, { blocked: !user.blocked });
   }
 }

@@ -32,8 +32,17 @@ export class Users {
   @Column({ nullable: false, default: false })
   blocked: boolean;
 
-  @Column({ nullable: false, default: 0 })
-  block_count: number;
+  @Column({ type: 'int', default: 0 })
+  failedLoginAttempts: number;
+
+  @Column({ type: 'timestamp', nullable: true })
+  loginLockedUntil: Date | null;
+
+  @Column({ type: 'int', default: 0 })
+  loginLockoutCount: number;
+
+  @Column({ type: 'timestamp', nullable: true })
+  lastFailedLoginAt: Date | null;
 
   @Column({ default: '', nullable: true })
   token: string;

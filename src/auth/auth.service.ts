@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  ForbiddenException,
-  Injectable,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
@@ -52,15 +48,25 @@ export class AuthService {
     };
   }
 
+  private getLockDurationMs(lockoutCount: number) {
+    const scheduleSeconds = [
+      5 * 60, // 1 -> 5 min
+      15 * 60, // 2 -> 15 min
+      60 * 60, // 3 -> 1 hour
+      6 * 60 * 60, // 4 -> 6 hours
+      24 * 60 * 60, // 5+ -> 24 hours (cap)
+    ];
+    const idx = Math.min(
+      Math.max(lockoutCount, 1) - 1,
+      scheduleSeconds.length - 1,
+    );
+    return scheduleSeconds[idx] * 1000;
+  }
+
   async validateUser(email: string, password: string): Promise<{ id: number }> {
-    const user: {
-      id: number;
-      password: string;
-      email: string;
-      active: boolean;
-      blocked: boolean;
-      block_count: number;
-    } = await this.usersRepository.getUser(email.toLowerCase());
+    const normalizedEmail = email.toLowerCase().trim();
+
+    const user = await this.usersRepository.getUser(normalizedEmail);
 
     if (!user || !user.password) {
       throw new ForbiddenAppException(ErrorCodes.CredentialsNotValid);
@@ -71,23 +77,69 @@ export class AuthService {
     if (user.blocked) {
       throw new ForbiddenAppException(ErrorCodes.NotEnoughPermissions);
     }
-    const id = Number(user.id);
-    const result = await promisify(bcrypt.compare)(password, user.password);
 
-    if (!result) {
-      this.usersRepository.update(
-        { id },
-        { block_count: user.block_count + 1 },
-      );
-      if (user.block_count + 1 >= 5) {
-        this.usersRepository.update({ id }, { blocked: true });
-      }
-      throw new ForbiddenAppException(ErrorCodes.CredentialsNotValid);
+    const now = new Date();
+
+    if (
+      user.loginLockedUntil &&
+      user.loginLockedUntil.getTime() > now.getTime()
+    ) {
+      throw new ForbiddenAppException(ErrorCodes.TooManyLoginAttempts);
     }
-    this.usersRepository.update({ id }, { block_count: 0 });
-    return {
-      id: user.id,
-    };
+
+    const ok = await promisify(bcrypt.compare)(password, user.password);
+
+    if (ok) {
+      await this.usersRepository.update(
+        { id: user.id },
+        {
+          failedLoginAttempts: 0,
+          loginLockedUntil: null,
+          loginLockoutCount: 0,
+          lastFailedLoginAt: null,
+        },
+      );
+
+      return { id: user.id };
+    }
+
+    const DECAY_WINDOW_MS = 24 * 60 * 60 * 1000; // 24h
+    const lastFailed = user.lastFailedLoginAt?.getTime() ?? 0;
+    const shouldDecay =
+      !lastFailed || now.getTime() - lastFailed > DECAY_WINDOW_MS;
+
+    const currentAttempts = shouldDecay ? 0 : (user.failedLoginAttempts ?? 0);
+    const currentLockouts = shouldDecay ? 0 : (user.loginLockoutCount ?? 0);
+
+    const nextAttempts = currentAttempts + 1;
+
+    if (nextAttempts >= 3) {
+      const nextLockouts = currentLockouts + 1;
+      const lockMs = this.getLockDurationMs(nextLockouts);
+      const lockedUntil = new Date(now.getTime() + lockMs);
+
+      await this.usersRepository.update(
+        { id: user.id },
+        {
+          failedLoginAttempts: nextAttempts,
+          loginLockoutCount: nextLockouts,
+          loginLockedUntil: lockedUntil,
+          lastFailedLoginAt: now,
+        },
+      );
+
+      throw new ForbiddenAppException(ErrorCodes.TooManyLoginAttempts);
+    }
+
+    await this.usersRepository.update(
+      { id: user.id },
+      {
+        failedLoginAttempts: nextAttempts,
+        lastFailedLoginAt: now,
+      },
+    );
+
+    throw new ForbiddenAppException(ErrorCodes.CredentialsNotValid);
   }
 
   async executeUserWithToken(user: TokenInfo, social?: boolean) {

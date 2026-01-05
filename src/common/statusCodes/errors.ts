@@ -37,10 +37,18 @@ export enum ErrorCodes {
   FileLoadError = 118,
   GenerationImageError = 119,
   FailedWriteFile = 120,
+  userAccessDenied = 121,
+  PasswordIsSameAsOld = 122,
+  WaitingApproving = 123,
+  TooManyLoginAttempts = 124,
 }
 
 export const ErrorDescriptionsArray = {
   [ErrorCodes.NotEnoughPermissions]: "You Don't Have Permissions",
+  [ErrorCodes.TooManyLoginAttempts]:
+    "It's too many login attempts, please try later!",
+  [ErrorCodes.PasswordIsSameAsOld]: 'Password is tha same',
+  [ErrorCodes.WaitingApproving]: 'Waiting approving registration',
   [ErrorCodes.UrlNotFound]: 'Url not found',
   [ErrorCodes.UnexpectedJSON]: 'Unexpected JSON',
   [ErrorCodes.Unauthorized]: 'Unauthorized',
