@@ -8,6 +8,7 @@ export interface JwtPayload {
   id?: number;
   exp?: number;
   iat: number;
+  sub: number;
 }
 
 export interface UserInterface {

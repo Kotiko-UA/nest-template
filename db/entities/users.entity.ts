@@ -56,8 +56,13 @@ export class Users {
   @Column({ nullable: false, default: false })
   active: boolean;
 
-  @ManyToOne(() => Roles, role => role.id)
-  @JoinColumn({ name: 'role' })
+  @ManyToOne(() => Roles, role => role.users, {
+    nullable: false,
+    onDelete: 'RESTRICT',
+    onUpdate: 'RESTRICT',
+    eager: true,
+  })
+  @JoinColumn()
   role: Roles;
 
   @CreateDateColumn({ type: 'timestamp', select: false })

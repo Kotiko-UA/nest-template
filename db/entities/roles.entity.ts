@@ -1,10 +1,4 @@
-import {
-  Column,
-  Entity,
-  PrimaryGeneratedColumn,
-  OneToMany,
-  JoinColumn,
-} from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { Users } from './users.entity';
 
 @Entity({
@@ -17,11 +11,6 @@ export class Roles {
   @Column({ unique: true, nullable: false })
   name: string;
 
-  @OneToMany(() => Users, users => users.role, {
-    cascade: true,
-    onDelete: 'RESTRICT',
-    onUpdate: 'RESTRICT',
-  })
-  @JoinColumn()
+  @OneToMany(() => Users, users => users.role)
   users: Users[];
 }

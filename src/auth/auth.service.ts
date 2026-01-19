@@ -29,7 +29,7 @@ export class AuthService {
     this.admins = this.configService.get('config.admins');
   }
 
-  generateTokens(payload): GeneratedTokensDto {
+  generateTokens(payload: { id: number; roleId: number }): GeneratedTokensDto {
     const refreshToken: string = this.jwtService.sign(payload, {
       secret: this.configService.get('jwt.refreshSecret'),
       expiresIn: this.configService.get('jwt.refreshTTL'),
@@ -140,6 +140,12 @@ export class AuthService {
     );
 
     throw new ForbiddenAppException(ErrorCodes.CredentialsNotValid);
+  }
+
+  async validateUserById(userId: number) {
+    return this.usersRepository.findOne({
+      where: { id: userId },
+    });
   }
 
   async executeUserWithToken(user: TokenInfo, social?: boolean) {

@@ -4,13 +4,12 @@ import {
   Get,
   HttpCode,
   Post,
-  Query,
   Request,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { UsersRepository } from 'src/common/repositories';
-import { GeneratedTokens, LoginAdminDto } from './auth.types';
+import { GeneratedTokens } from './auth.types';
 import { LoginDto } from './dto/Login.dto';
 import { GeneratedTokensDto } from './dto/Tokens.dto';
 import { AuthService } from './auth.service';
@@ -38,7 +37,7 @@ export class AuthController {
     console.log({ user });
     const tokens: GeneratedTokensDto = await this.authService.generateTokens({
       id: user.id,
-      role: userInfo.role.id,
+      roleId: userInfo.role.id,
     });
     return { ...tokens, user: mappedData };
   }
