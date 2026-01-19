@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 import { randomBytes } from 'crypto';
-import { AuthInfo } from 'src/auth/auth.types';
 import { RolesRepository, UsersRepository } from 'src/common/repositories';
 import { ErrorCodes } from 'src/common/statusCodes';
 import { NodemailerService } from 'src/shared/services';
@@ -55,7 +54,7 @@ export class UsersService {
       password: password
         ? await bcrypt.genSalt(10).then(salt => bcrypt.hash(password, salt))
         : null,
-      role: { id: role.id },
+      role,
     };
 
     const userExist = await this.usersRepository.findOne({
